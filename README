@@ -1,0 +1,36 @@
+ProtectParams
+=============
+
+This is a simple rails plugin I hacked together, mainly to see if it was possible but sparked off by one very important thought.
+
+I **love** the convenience of mass-assigning variables in rails.
+
+  @user = User.create params[:user]
+
+It just feels right, but obviously (as in the above example) we're exposing mass assignment of variables to the would-be hacker, which could be used for nefarious purposes.
+
+The usual approach is with the attr_protected method of ActiveRecord.
+
+  class Post < ActiveRecord::Base
+    attr_protected :id, :created_at 
+  end
+
+For some reason it just never has sat the right way with me, so I chose to experiment with this plugin! If you hook up the model attributes that you want to protect with the **attr\_param\_protected** method.
+
+  class Post < ActiveRecord::Base
+    attr\_param\_protected :id, :type
+    ...
+  end
+  
+Then all we need to do is add the following line to our controller (it will work if you add it to ApplicationController). If you want to protect a number of models you can do that too.
+  
+  PostsController < ApplicationController
+  
+    protect\_params\_for :post
+    # or protect\_params\_for :post, :user
+    ...
+  end
+
+When a request comes in the attributes specified in your model will be stripped from the request parameters (they will show in your logs though!). If you want to join this mad science experiment, let me know how it goes! YMMV :)
+
+  script/plugin install http://svn.davidjrice.co.uk/svn/projects/plugins/protect_params
